@@ -77,6 +77,30 @@ app.put('/shopping-list/:id', jsonParser, (req, res) => {
   res.status(204).end();
 });
 
+app.put('/recipes/:id', jsonParser, (req, res) => {
+  const requiredFields = ['name', 'id', 'ingredients'];
+  for(let i=0; i<requiredFields.length; i++)
+  {
+    const field = requiredFields[i];
+    if(!(field in req.body))
+    {
+      const message = `Missing \`${field}\` in request body.`
+      console.error(message);
+      return res.status(400).send(message);
+    }    
+  }
+
+  console.log(`Updating recipe item \`${req.params.id}\``);
+  Recipes.update(
+    {
+      id: req.params.id,
+      name: req.body.name,
+      ingredients: req.body.ingredients
+    }
+  );
+  res.status(204).end();
+});
+
 // when DELETE request comes in with an id in path,
 // try to delete that item from ShoppingList.
 app.delete('/shopping-list/:id', (req, res) => {
@@ -111,6 +135,6 @@ app.delete('/recipes/:id', (req, res) => {
   res.status(204).end();
 });
 
-app.listen(process.env.PORT || 8080, () => {
-  console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Your app is listening on port ${process.env.PORT || 3000}`);
 });
